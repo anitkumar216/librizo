@@ -1,0 +1,20 @@
+Collection Name - Library Details
+ - Library Id
+ - Library Name*
+ - Library Full Address*
+ - Contact Number*
+ - Email Id*
+ - Total Seat*
+ - Registration Fee
+ - Shift(1 shift, Fee, Timing), (2nd shift, Fee, Timing), add more shift
+ - Opening Time
+ - Closing Time
+ - Library Type(Private, Public, Institution)
+ - Library Facilities(24*7 Availablity, Wifi etc)
+ - Library Images
+ - Owner Aadhar Number*
+ - Owner Pan Card Number
+ - Owner Bank Details
+ - GST Number
+ - lat
+ - long

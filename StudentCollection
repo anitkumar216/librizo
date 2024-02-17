@@ -1,0 +1,13 @@
+Collection Name - Student Details
+ - Student Id (Not Null, Primary, Auto-Generated)
+ - Student Full Name*
+ - Student Mobile Number*
+ - Student Email Address
+ - Field Of Study*
+ - Aadhar Number
+ - Seat Number*
+ - Student Fee*
+ - Highest Qualification
+ - Address
+ - DOB
+ - Library Id
