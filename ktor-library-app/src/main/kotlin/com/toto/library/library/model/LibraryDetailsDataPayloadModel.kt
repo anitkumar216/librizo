@@ -15,7 +15,7 @@ data class LibraryDetailsDataPayloadModel(
     val totalSeat: String?,
     val registrationFee: String?,
     val securityDeposit: String?,
-    val shiftDetail: ArrayList<LibraryShiftDetailModel>?,
+    val shiftDetails: ArrayList<LibraryShiftDetailModel>?,
     val openingTiming: String?,
     val closingTiming: String?,
     val libraryType: String?,

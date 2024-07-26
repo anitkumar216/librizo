@@ -20,15 +20,35 @@ fun Application.routeRegister(
 ) {
     routing {
         authenticate {
-            post("/addLibraryDetails") {
+            post("/updateLibraryDetails") {
                 val requestBody = call.receive<LibraryDetailsDataPayloadModel>()
                 val principal = call.principal<JWTPrincipal>()
                 val id = principal!!.payload.getClaim("libraryId").asString()
-                userCollection.updateLibraryById(id, requestBody)
-                call.respond(
-                    status = HttpStatusCode.Created,
-                    GenericResponse(isSuccess = true, data = id)
-                )
+                val previousData = userCollection.getLibraryById(id!!)
+                if (previousData.isNotEmpty()) {
+                    val library = LibraryDetailsDataPayloadModel(
+                        previousData[0]._id,
+                        requestBody.emailId,
+                        previousData[0].phoneNumber,
+                        requestBody.libraryName,
+                        requestBody.libraryAddress,
+                        requestBody.totalSeat,
+                        requestBody.registrationFee,
+                        requestBody.securityDeposit,
+                        requestBody.shiftDetails,
+                        requestBody.openingTiming,
+                        requestBody.closingTiming,
+                        requestBody.libraryType,
+                        requestBody.libraryFacilities,
+                        requestBody.ownerAadharNumber,
+                        requestBody.libraryLocation
+                    )
+                    userCollection.updateLibraryById(id, library)
+                    call.respond(
+                        status = HttpStatusCode.Created,
+                        GenericResponse(isSuccess = true, data = id)
+                    )
+                }
             }
         }
     }

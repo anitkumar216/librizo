@@ -20,9 +20,9 @@ class OtpCollection {
         )
     }
 
-    suspend fun saveOTP(phoneNumber: String, otp: String, expiryTime: Date) {
+    suspend fun saveOTP(phoneNumber: String, otp: String, expiryTime: Date) : Boolean {
         val otpEntry = LoginOtpSaveCollectionModel(phoneNumber, otp, expiryTime)
-        otpCollection.insertOne(otpEntry)
+        return otpCollection.insertOne(otpEntry).wasAcknowledged()
     }
 
 

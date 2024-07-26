@@ -1,6 +1,10 @@
 package com.toto.library.library.routes
 
+import com.toto.library.AppUtils.GetDates
+import com.toto.library.common.model.GenericResponse
 import com.toto.library.common.repository.LibraryDetailsCollection
+import com.toto.library.common.repository.StudentDetailsCollection
+import com.toto.library.library.model.LibraryDashboardResponseModel
 import com.toto.library.library.model.LibraryDetailsDataPayloadModel
 import io.ktor.http.*
 import io.ktor.server.application.*
@@ -9,9 +13,11 @@ import io.ktor.server.auth.jwt.*
 import io.ktor.server.request.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
+import io.ktor.util.*
 
 fun Application.userRoutes(
-    userCollection: LibraryDetailsCollection
+    userCollection: LibraryDetailsCollection,
+    studentCollection: StudentDetailsCollection
 ) {
     routing {
         authenticate {
@@ -29,6 +35,28 @@ fun Application.userRoutes(
                 } else {
                     call.respond(status = HttpStatusCode.NotFound, "Student not found")
                 }
+            }
+
+            get("/getLibraryDashboardDetails") {
+                val principal = call.principal<JWTPrincipal>()
+                val id = principal!!.payload.getClaim("libraryId").asString()
+                val library = userCollection.getLibraryById(id!!)
+                val students = studentCollection.getAllStudent(id)
+                val totalSeats = library[0].totalSeat?.toInt()
+                val shiftInfo = library[0].shiftDetails
+                val totalShift = shiftInfo?.size
+                val totalStudents = students.size
+                val shiftWiseStudents = ArrayList<Int>()
+                for (i in 0..< totalShift!!) {
+                    shiftWiseStudents.add(studentCollection.getAllStudent(id, library[0].shiftDetails!![i].shiftName).size)
+                }
+                val date = GetDates.getCurrentDate()
+                val todayFeeDateStudents = studentCollection.getAllDueStudentStudent(id, date)
+                val totalTodayFeeDateStudents = todayFeeDateStudents.size
+                val libraryDashboardResponseModel = LibraryDashboardResponseModel(
+                    totalSeats!!, totalShift, totalStudents, shiftWiseStudents, totalTodayFeeDateStudents
+                )
+                call.respond(HttpStatusCode.OK, GenericResponse(true, libraryDashboardResponseModel))
             }
 
             get("/getProfile") {
@@ -62,19 +90,6 @@ fun Application.userRoutes(
                     call.respond(HttpStatusCode.BadRequest, "Something Wrong")
                 }
             }
-
-            /*post("/changeUserIdPassword/{id}") {
-                val id = call.parameters["id"]
-                val requestBody = call.receive<ChangeUserPasswordPayloadModel>()
-                val user = userCollection.getUserById(id!!)
-                val newUser = UserDataModel(id, user[0].username, user[0].emailId, user[0].phoneNumber, requestBody.password)
-                val isUpdated = userCollection.updateUserById(id, newUser)
-                if (isUpdated) {
-                    call.respond(HttpStatusCode.Created, "Password Changed")
-                } else {
-                    call.respond(HttpStatusCode.BadRequest, "Something Wrong")
-                }
-            }*/
         }
     }
 }

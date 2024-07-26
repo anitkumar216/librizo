@@ -37,4 +37,7 @@ dependencies {
 
     testImplementation("io.ktor:ktor-server-tests-jvm")
     testImplementation("org.jetbrains.kotlin:kotlin-test-junit:$kotlin_version")
+
+    //implementation("com.twilio.sdk:twilio:8.26.1")
+    implementation("com.amazonaws:aws-java-sdk-pinpoint:1.12.10")
 }
